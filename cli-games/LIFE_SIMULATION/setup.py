@@ -11,7 +11,7 @@ setup(
     name='LIFE_SIMULATION',
     version='1',
     packages=['LIFE_SIMULATION'],
-    url='https://github.com/NativeApkDev/ANCIENT_INVASION',
+    url='https://github.com/SoftwareApkDev/SoftwareApkDev.github.io/tree/main/cli-games/LIFE_SIMULATION',
     license='MIT',
     author='NativeApkDev',
     author_email='nativeapkdev2021@gmail.com',
@@ -27,7 +27,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "ANCIENT_INVASION=ANCIENT_INVASION.ancient_invasion:main",
+            "LIFE_SIMULATION=LIFE_SIMULATION.life_simulation:main",
         ]
     }
 )

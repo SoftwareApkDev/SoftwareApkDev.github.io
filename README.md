@@ -29,9 +29,9 @@ To see my Android games, go to [Android Games](https://softwareapkdev.github.io/
 
 ### 2. Command Line Interface Games
 
-| Game | Progress |
-|------|----------|
-|      |          |
+| Game                                                    | Progress           |
+|---------------------------------------------------------|--------------------|
+| [Life Simulation](cli-games/LIFE_SIMULATION/index.html) | Under construction |
 
 ### 3. Graphical User Interface Games
 

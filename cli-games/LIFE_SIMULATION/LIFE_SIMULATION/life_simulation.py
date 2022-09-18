@@ -153,7 +153,7 @@ class Minigame:
     This class contains attributes of a minigame in this game.
     """
 
-    POSSIBLE_NAMES: list = ["BOX EATS PLANTS", "MATCH WORD PUZZLE", "MATCH-3 GAME"]
+    POSSIBLE_NAMES: list = []
 
     def __init__(self, name):
         # type: (str) -> None
@@ -184,673 +184,7 @@ class Minigame:
 ###########################################
 
 
-###########################################
-# BOX EATS PLANTS
-###########################################
-
-
-class BoxEatsPlantsBoard:
-    """
-    This class contains attributes of a board in the game "Box Eats Plants".
-    """
-
-    BOARD_WIDTH: int = 10
-    BOARD_HEIGHT: int = 10
-
-    def __init__(self):
-        # type: () -> None
-        self.__tiles: list = []  # initial value
-        for i in range(self.BOARD_HEIGHT):
-            new: list = []  # initial value
-            for j in range(self.BOARD_WIDTH):
-                new.append(BoxEatsPlantsTile())
-
-            self.__tiles.append(new)
-
-    def num_plants(self):
-        # type: () -> int
-        plants: int = 0  # initial value
-        for y in range(self.BOARD_HEIGHT):
-            for x in range(self.BOARD_WIDTH):
-                curr_tile: BoxEatsPlantsTile = self.get_tile_at(x, y)
-                if isinstance(curr_tile.plant, Plant):
-                    plants += 1
-
-        return plants
-
-    def num_rocks(self):
-        # type: () -> int
-        rocks: int = 0  # initial value
-        for y in range(self.BOARD_HEIGHT):
-            for x in range(self.BOARD_WIDTH):
-                curr_tile: BoxEatsPlantsTile = self.get_tile_at(x, y)
-                if isinstance(curr_tile.rock, Rock):
-                    rocks += 1
-
-        return rocks
-
-    def num_boxes(self):
-        # type: () -> int
-        boxes: int = 0  # initial value
-        for y in range(self.BOARD_HEIGHT):
-            for x in range(self.BOARD_WIDTH):
-                curr_tile: BoxEatsPlantsTile = self.get_tile_at(x, y)
-                if isinstance(curr_tile.box, Box):
-                    boxes += 1
-
-        return boxes
-
-    def spawn_plant(self):
-        # type: () -> Plant
-        plant_x: int = random.randint(0, self.BOARD_WIDTH - 1)
-        plant_y: int = random.randint(0, self.BOARD_HEIGHT - 1)
-        plant_tile: BoxEatsPlantsTile = self.__tiles[plant_y][plant_x]
-        while plant_tile.plant is not None:
-            plant_x = random.randint(0, self.BOARD_WIDTH - 1)
-            plant_y = random.randint(0, self.BOARD_HEIGHT - 1)
-            plant_tile = self.__tiles[plant_y][plant_x]
-
-        plant: Plant = Plant(plant_x, plant_y)
-        plant_tile.add_plant(plant)
-        return plant
-
-    def spawn_rock(self):
-        # type: () -> Rock
-        rock_x: int = random.randint(0, self.BOARD_WIDTH - 1)
-        rock_y: int = random.randint(0, self.BOARD_HEIGHT - 1)
-        rock_tile: BoxEatsPlantsTile = self.__tiles[rock_y][rock_x]
-        while rock_tile.rock is not None:
-            rock_x = random.randint(0, self.BOARD_WIDTH - 1)
-            rock_y = random.randint(0, self.BOARD_HEIGHT - 1)
-            rock_tile = self.__tiles[rock_y][rock_x]
-
-        rock: Rock = Rock(rock_x, rock_y)
-        rock_tile.add_rock(rock)
-        return rock
-
-    def spawn_box(self):
-        # type: () -> Box
-        box_x: int = random.randint(0, self.BOARD_WIDTH - 1)
-        box_y: int = random.randint(0, self.BOARD_HEIGHT - 1)
-        box_tile: BoxEatsPlantsTile = self.__tiles[box_y][box_x]
-        while box_tile.plant is not None or box_tile.rock is not None:
-            box_x = random.randint(0, self.BOARD_WIDTH - 1)
-            box_y = random.randint(0, self.BOARD_HEIGHT - 1)
-            box_tile = self.__tiles[box_y][box_x]
-        box: Box = Box(box_x, box_y)
-        box_tile.add_box(box)
-        return box
-
-    def get_tile_at(self, x, y):
-        # type: (int, int) -> BoxEatsPlantsTile or None
-        if x < 0 or x >= self.BOARD_WIDTH or y < 0 or y >= self.BOARD_HEIGHT:
-            return None
-        return self.__tiles[y][x]
-
-    def get_tiles(self):
-        # type: () -> list
-        return self.__tiles
-
-    def __str__(self):
-        # type: () -> str
-        return str(tabulate(self.__tiles, tablefmt='fancy_grid'))
-
-    def clone(self):
-        # type: () -> BoxEatsPlantsBoard
-        return copy.deepcopy(self)
-
-
-class Box:
-    """
-    This class contains attributes of a box in the game "Box Eats Plants".
-    """
-
-    def __init__(self, x, y):
-        # type: (int, int) -> None
-        self.name: str = "BOX"
-        self.x: int = x
-        self.y: int = y
-
-    def move_up(self, board):
-        # type: (BoxEatsPlantsBoard) -> bool
-        if self.y > 0:
-            old_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            old_tile.remove_box()
-            self.y -= 1
-            new_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            new_tile.add_box(self)
-            return True
-        return False
-
-    def move_down(self, board):
-        # type: (BoxEatsPlantsBoard) -> bool
-        if self.y < board.BOARD_HEIGHT - 1:
-            old_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            old_tile.remove_box()
-            self.y += 1
-            new_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            new_tile.add_box(self)
-            return True
-        return False
-
-    def move_left(self, board):
-        # type: (BoxEatsPlantsBoard) -> bool
-        if self.x > 0:
-            old_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            old_tile.remove_box()
-            self.x -= 1
-            new_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            new_tile.add_box(self)
-            return True
-        return False
-
-    def move_right(self, board):
-        # type: (BoxEatsPlantsBoard) -> bool
-        if self.x < board.BOARD_WIDTH - 1:
-            old_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            old_tile.remove_box()
-            self.x += 1
-            new_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            new_tile.add_box(self)
-            return True
-        return False
-
-    def __str__(self):
-        # type: () -> str
-        return str(self.name)
-
-    def clone(self):
-        # type: () -> Box
-        return copy.deepcopy(self)
-
-
-class Plant:
-    """
-    This class contains attributes of a plant in the game "Box Eats Plants".
-    """
-
-    def __init__(self, x, y):
-        # type: (int, int) -> None
-        self.name: str = "PLANT"
-        self.x: int = x
-        self.y: int = y
-
-    def move_up(self, board):
-        # type: (BoxEatsPlantsBoard) -> bool
-        if self.y > 0:
-            old_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            old_tile.remove_plant()
-            self.y -= 1
-            new_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            new_tile.add_plant(self)
-            return True
-        return False
-
-    def move_down(self, board):
-        # type: (BoxEatsPlantsBoard) -> bool
-        if self.y < board.BOARD_HEIGHT - 1:
-            old_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            old_tile.remove_plant()
-            self.y += 1
-            new_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            new_tile.add_plant(self)
-            return True
-        return False
-
-    def move_left(self, board):
-        # type: (BoxEatsPlantsBoard) -> bool
-        if self.x > 0:
-            old_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            old_tile.remove_plant()
-            self.x -= 1
-            new_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            new_tile.add_plant(self)
-            return True
-        return False
-
-    def move_right(self, board):
-        # type: (BoxEatsPlantsBoard) -> bool
-        if self.x < board.BOARD_WIDTH - 1:
-            old_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            old_tile.remove_plant()
-            self.x += 1
-            new_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            new_tile.add_plant(self)
-            return True
-        return False
-
-    def __str__(self):
-        # type: () -> str
-        return str(self.name)
-
-    def clone(self):
-        # type: () -> Plant
-        return copy.deepcopy(self)
-
-
-class Rock:
-    """
-    This class contains attributes of a rock in the game "Box Eats Plants".
-    """
-
-    def __init__(self, x, y):
-        # type: (int, int) -> None
-        self.name: str = "ROCK"
-        self.x: int = x
-        self.y: int = y
-
-    def move_up(self, board):
-        # type: (BoxEatsPlantsBoard) -> bool
-        if self.y > 0:
-            old_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            old_tile.remove_rock()
-            self.y -= 1
-            new_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            new_tile.add_rock(self)
-            return True
-        return False
-
-    def move_down(self, board):
-        # type: (BoxEatsPlantsBoard) -> bool
-        if self.y < board.BOARD_HEIGHT - 1:
-            old_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            old_tile.remove_rock()
-            self.y += 1
-            new_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            new_tile.add_rock(self)
-            return True
-        return False
-
-    def move_left(self, board):
-        # type: (BoxEatsPlantsBoard) -> bool
-        if self.x > 0:
-            old_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            old_tile.remove_rock()
-            self.x -= 1
-            new_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            new_tile.add_rock(self)
-            return True
-        return False
-
-    def move_right(self, board):
-        # type: (BoxEatsPlantsBoard) -> bool
-        if self.x < board.BOARD_WIDTH - 1:
-            old_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            old_tile.remove_rock()
-            self.x += 1
-            new_tile: BoxEatsPlantsTile = board.get_tile_at(self.x, self.y)
-            new_tile.add_rock(self)
-            return True
-        return False
-
-    def __str__(self):
-        # type: () -> str
-        return str(self.name)
-
-    def clone(self):
-        # type: () -> Rock
-        return copy.deepcopy(self)
-
-
-class BoxEatsPlantsTile:
-    """
-    This class contains attributes of a tile in the minigame "Box Eats Plants".
-    """
-
-    def __init__(self):
-        # type: () -> None
-        self.box: Box or None = None
-        self.plant: Plant or None = None
-        self.rock: Rock or None = None
-
-    def add_box(self, box):
-        # type: (Box) -> bool
-        if self.box is None:
-            self.box = box
-            return True
-        return False
-
-    def remove_box(self):
-        # type: () -> None
-        self.box = None
-
-    def add_plant(self, plant):
-        # type: (Plant) -> bool
-        if self.plant is None:
-            self.plant = plant
-            return True
-        return False
-
-    def remove_plant(self):
-        # type: () -> None
-        self.plant = None
-
-    def add_rock(self, rock):
-        # type: (Rock) -> bool
-        if self.rock is None:
-            self.rock = rock
-            return True
-        return False
-
-    def remove_rock(self):
-        # type: () -> None
-        self.rock = None
-
-    def __str__(self):
-        # type: () -> str
-        if self.box is None and self.plant is None and self.rock is None:
-            return "NONE"
-        res: str = ""  # initial value
-        if isinstance(self.box, Box):
-            res += str(self.box)
-
-        if isinstance(self.plant, Plant):
-            if self.box is not None:
-                res += "\n" + str(self.plant)
-            else:
-                res += str(self.plant)
-
-        if isinstance(self.rock, Rock):
-            if self.box is not None or self.plant is not None:
-                res += "\n" + str(self.rock)
-            else:
-                res += str(self.rock)
-
-        return res
-
-    def clone(self):
-        # type: () -> BoxEatsPlantsTile
-        return copy.deepcopy(self)
-
-
-###########################################
-# BOX EATS PLANTS
-###########################################
-
-
-###########################################
-# MATCH WORD PUZZLE
-###########################################
-
-
-def get_index_of_element(a_list: list, elem: object) -> int:
-    for i in range(len(a_list)):
-        if a_list[i] == elem:
-            return i
-
-    return -1
-
-
-class MatchWordPuzzleBoard:
-    """
-    This class contains attributes of the board for the minigame "Match Word Puzzle".
-    """
-
-    BOARD_WIDTH: int = 6
-    BOARD_HEIGHT: int = 4
-
-    def __init__(self):
-        # type: () -> None
-        self.__tiles: list = []  # initial value
-        chosen_keywords: list = []  # initial value
-        chosen_keywords_tally: list = [0] * 12
-        for i in range(12):
-            curr_keyword: str = MatchWordPuzzleTile.POSSIBLE_KEYWORDS[random.randint(0,
-                                                                                     len(MatchWordPuzzleTile.POSSIBLE_KEYWORDS) - 1)]
-            while curr_keyword in chosen_keywords:
-                curr_keyword = MatchWordPuzzleTile.POSSIBLE_KEYWORDS[random.randint(0,
-                                                                                    len(MatchWordPuzzleTile.POSSIBLE_KEYWORDS) - 1)]
-
-            chosen_keywords.append(curr_keyword)
-
-        for i in range(self.BOARD_HEIGHT):
-            new: list = []  # initial value
-            for j in range(self.BOARD_WIDTH):
-                curr_keyword: str = chosen_keywords[random.randint(0, len(chosen_keywords) - 1)]
-                while chosen_keywords_tally[get_index_of_element(chosen_keywords, curr_keyword)] >= 2:
-                    curr_keyword = chosen_keywords[random.randint(0, len(chosen_keywords) - 1)]
-
-                new.append(MatchWordPuzzleTile(curr_keyword))
-                chosen_keywords_tally[get_index_of_element(chosen_keywords, curr_keyword)] += 1
-
-            self.__tiles.append(new)
-
-    def all_opened(self):
-        # type: () -> bool
-        for i in range(self.BOARD_HEIGHT):
-            for j in range(self.BOARD_WIDTH):
-                if self.__tiles[i][j].is_closed:
-                    return False
-
-        return True
-
-    def get_tile_at(self, x, y):
-        # type: (int, int) -> MatchWordPuzzleTile or None
-        if x < 0 or x >= self.BOARD_WIDTH or y < 0 or y >= self.BOARD_HEIGHT:
-            return None
-        return self.__tiles[y][x]
-
-    def get_tiles(self):
-        # type: () -> list
-        return self.__tiles
-
-    def __str__(self):
-        # type: () -> str
-        return str(tabulate(self.__tiles, tablefmt='fancy_grid'))
-
-    def clone(self):
-        # type: () -> MatchWordPuzzleBoard
-        return copy.deepcopy(self)
-
-
-class MatchWordPuzzleTile:
-    """
-    This class contains attributes of a tile in the minigame "Match Word Puzzle".
-    """
-
-    POSSIBLE_KEYWORDS: list = ["AND", "AS", "ASSERT", "BREAK", "CLASS", "CONTINUE", "DEF", "DEL", "ELIF", "ELSE",
-                               "EXCEPT", "FALSE", "FINALLY", "FOR", "FROM", "GLOBAL", "IF", "IMPORT", "IN", "IS",
-                               "LAMBDA", "NONE", "NONLOCAL", "NOT", "OR", "PASS", "RAISE", "RETURN", "TRUE",
-                               "TRY", "WHILE", "WITH", "YIELD"]
-
-    def __init__(self, contents):
-        # type: (str) -> None
-        self.contents: str = contents if contents in self.POSSIBLE_KEYWORDS else self.POSSIBLE_KEYWORDS[0]
-        self.is_closed: bool = True
-
-    def open(self):
-        # type: () -> bool
-        if self.is_closed:
-            self.is_closed = False
-            return True
-        return False
-
-    def __str__(self):
-        # type: () -> str
-        return "CLOSED" if self.is_closed else str(self.contents)
-
-    def clone(self):
-        # type: () -> MatchWordPuzzleTile
-        return copy.deepcopy(self)
-
-
-###########################################
-# MATCH WORD PUZZLE
-###########################################
-
-
-###########################################
-# MATCH-3 GAME
-###########################################
-
-
-"""
-Code for match-3 game is inspired by the following sources:
-1. https://www.raspberrypi.com/news/make-a-columns-style-tile-matching-game-wireframe-25/
-2. https://github.com/Wireframe-Magazine/Wireframe-25/blob/master/match3.py
-"""
-
-
-class MatchThreeBoard:
-    """
-    This class contains attributes of the board for the minigame "Match-3 Game".
-    """
-
-    BOARD_WIDTH: int = 10
-    BOARD_HEIGHT: int = 10
-
-    def __init__(self):
-        # type: () -> None
-        self.__tiles: list = [["AND"] * self.BOARD_WIDTH for k in range(self.BOARD_HEIGHT)]  # initial value
-        for i in range(self.BOARD_HEIGHT):
-            new: list = []  # initial value
-            for j in range(self.BOARD_WIDTH):
-                curr_keyword: str = MatchThreeTile.POSSIBLE_KEYWORDS[random.randint(0,
-                                                                                    len(MatchThreeTile.POSSIBLE_KEYWORDS) - 1)]
-                while (i > 0 and self.__tiles[i][j].contents == self.__tiles[i - 1][j].contents) or \
-                        (j > 0 and self.__tiles[i][j].contents == self.__tiles[i][j - 1].contents):
-                    curr_keyword = MatchThreeTile.POSSIBLE_KEYWORDS[random.randint(0,
-                                                                                   len(MatchThreeTile.POSSIBLE_KEYWORDS) - 1)]
-
-                new.append(MatchThreeTile(curr_keyword))
-
-            self.__tiles.append(new)
-
-        self.__matches: list = []  # initial value
-
-    def swap_tiles(self, x1, y1, x2, y2):
-        # type: (int, int, int, int) -> bool
-        if self.get_tile_at(x1, y1) is None or self.get_tile_at(x2, y2) is None:
-            return False
-
-        temp: MatchThreeTile = self.__tiles[y1][x1]
-        self.__tiles[y1][x1] = self.__tiles[y2][x2]
-        self.__tiles[y2][x2] = temp
-        return True
-
-    def no_possible_moves(self):
-        # type: () -> bool
-        # Trying all possible moves and checking whether it has matches or not
-        for j in range(self.BOARD_WIDTH):
-            for i in range(self.BOARD_HEIGHT - 1):
-                new_board: MatchThreeBoard = self.clone()
-                temp: MatchThreeTile = new_board.__tiles[i][j]
-                new_board.__tiles[i][j] = new_board.__tiles[i + 1][j]
-                new_board.__tiles[i + 1][j] = temp
-                matches: list = new_board.check_matches()
-                if len(matches) > 0:
-                    return False
-
-        for i in range(self.BOARD_HEIGHT):
-            for j in range(self.BOARD_WIDTH - 1):
-                new_board: MatchThreeBoard = self.clone()
-                temp: MatchThreeTile = new_board.__tiles[i][j]
-                new_board.__tiles[i][j] = new_board.__tiles[i][j + 1]
-                new_board.__tiles[i][j + 1] = temp
-                matches: list = new_board.check_matches()
-                if len(matches) > 0:
-                    return False
-
-        return True
-
-    def check_matches(self):
-        # type: () -> list
-        self.__matches = []  # initial value
-        for j in range(self.BOARD_WIDTH):
-            curr_match: list = []  # initial value
-            for i in range(self.BOARD_HEIGHT):
-                if len(curr_match) == 0 or self.__tiles[i][j].contents == self.__tiles[i - 1][j].contents:
-                    curr_match.append((i, j))
-                else:
-                    if len(curr_match) >= 3:
-                        self.__matches.append(curr_match)
-                    curr_match = [(i, j)]
-            if len(curr_match) >= 3:
-                self.__matches.append(curr_match)
-
-        for i in range(self.BOARD_HEIGHT):
-            curr_match: list = []  # initial value
-            for j in range(self.BOARD_WIDTH):
-                if len(curr_match) == 0 or self.__tiles[i][j].contents == self.__tiles[i][j - 1].contents:
-                    curr_match.append((i, j))
-                else:
-                    if len(curr_match) >= 3:
-                        self.__matches.append(curr_match)
-                    curr_match = [(i, j)]
-            if len(curr_match) >= 3:
-                self.__matches.append(curr_match)
-
-        return self.__matches
-
-    def clear_matches(self):
-        # type: () -> None
-        for match in self.__matches:
-            for position in match:
-                self.__tiles[position[0]][position[1]].contents = "NONE"
-
-        self.__matches = []
-
-    def fill_board(self):
-        # type: () -> None
-        for j in range(self.BOARD_WIDTH):
-            for i in range(self.BOARD_HEIGHT):
-                if self.__tiles[i][j].contents == "NONE":
-                    for row in range(i, 0, -1):
-                        self.__tiles[row][j].contents = self.__tiles[row - 1][j].contents
-                    self.__tiles[0][j].contents = MatchThreeTile.POSSIBLE_KEYWORDS[random.randint(0,
-                                                                                                  len(MatchThreeTile.POSSIBLE_KEYWORDS) - 1)]
-                    while self.__tiles[0][j].contents == self.__tiles[1][j].contents or (j > 0 and
-                                                                                         self.__tiles[0][j].contents ==
-                                                                                         self.__tiles[0][
-                                                                                             j - 1].contents) or \
-                            (j < self.BOARD_WIDTH - 1 and self.__tiles[0][j].contents == self.__tiles[0][
-                                j + 1].contents):
-                        self.__tiles[0][j].contents = MatchThreeTile.POSSIBLE_KEYWORDS[random.randint(0,
-                                                                                                      len(MatchThreeTile.POSSIBLE_KEYWORDS) - 1)]
-
-    def get_tile_at(self, x, y):
-        # type: (int, int) -> MatchThreeTile or None
-        if x < 0 or x >= self.BOARD_WIDTH or y < 0 or y >= self.BOARD_HEIGHT:
-            return None
-        return self.__tiles[y][x]
-
-    def get_tiles(self):
-        # type: () -> list
-        return self.__tiles
-
-    def __str__(self):
-        # type: () -> str
-        return str(tabulate(self.__tiles, tablefmt='fancy_grid'))
-
-    def clone(self):
-        # type: () -> MatchThreeBoard
-        return copy.deepcopy(self)
-
-
-class MatchThreeTile:
-    """
-    This class contains attributes of a tile in the minigame "Match-3 Game".
-    """
-
-    POSSIBLE_KEYWORDS: list = ["AND", "AS", "ASSERT", "BREAK", "CLASS", "CONTINUE", "DEF", "DEL", "ELIF", "ELSE",
-                               "EXCEPT", "FALSE", "FINALLY", "FOR", "FROM", "GLOBAL"]
-
-    def __init__(self, contents):
-        # type: (str) -> None
-        self.contents: str = contents if contents in self.POSSIBLE_KEYWORDS else "NONE"
-
-    def __str__(self):
-        # type: () -> str
-        return str(self.contents)
-
-    def clone(self):
-        # type: () -> MatchThreeTile
-        return copy.deepcopy(self)
-
-
-###########################################
-# MATCH-3 GAME
-###########################################
+# TODO: add minigames
 
 
 ###########################################
@@ -858,16 +192,32 @@ class MatchThreeTile:
 ###########################################
 
 
-class Action:
+class PVPBattleAction:
     """
-    This class contains attributes of an action that can take place during battles.
+    This class contains attributes of an action that can be carried out during PvP battles.
     """
 
-    POSSIBLE_NAMES: list = ["NORMAL ATTACK", "NORMAL HEAL", "USE SKILL"]
 
-    def __init__(self, name):
-        # type: (str) -> None
-        self.name: str = name if name in self.POSSIBLE_NAMES else self.POSSIBLE_NAMES[0]
+class CreatureBattleAction:
+    """
+    This class contains attributes of an action that can be carried out during legendary creature battles.
+    """
+
+
+class AwakenBonus:
+    """
+    This class contains attributes of the bonus gained for awakening a legendary creature.
+    """
+
+
+class Battle:
+    """
+    This class contains attributes of a battle in this game.
+    """
+
+    def __init__(self, trainer1):
+        # type: (Trainer) -> None
+        self.trainer1: Trainer = trainer1
 
     def __str__(self):
         # type: () -> str
@@ -884,20 +234,8 @@ class Action:
         return res + ")"
 
     def clone(self):
-        # type: () -> Action
+        # type: () -> Battle
         return copy.deepcopy(self)
-
-
-class AwakenBonus:
-    """
-    This class contains attributes of the bonus gained for awakening a legendary creature.
-    """
-
-
-class Battle:
-    """
-    This class contains attributes of a battle in this game.
-    """
 
 
 class PVPBattle(Battle):
@@ -905,11 +243,21 @@ class PVPBattle(Battle):
     This class contains attributes of a battle between players.
     """
 
+    def __init__(self, trainer1, trainer2):
+        # type: (Trainer, Trainer) -> None
+        Battle.__init__(self, trainer1)
+        self.trainer2: Trainer = trainer2
+
 
 class WildBattle(Battle):
     """
     This class contains attributes of a battle against a legendary creature.
     """
+
+    def __init__(self, trainer1, wild_legendary_creature):
+        # type: (Trainer, LegendaryCreature) -> None
+        Battle.__init__(self, trainer1)
+        self.wild_legendary_creature: LegendaryCreature = wild_legendary_creature
 
 
 class TrainerBattle(Battle):
@@ -917,17 +265,76 @@ class TrainerBattle(Battle):
     This class contains attributes of a battle between legendary creature trainers.
     """
 
+    def __init__(self, trainer1, trainer2):
+        # type: (Trainer, Trainer) -> None
+        Battle.__init__(self, trainer1)
+        self.trainer2: Trainer = trainer2
+
 
 class Planet:
     """
     This class contains attributes of the planet in this game.
     """
 
+    def __init__(self, name, cities):
+        # type: (str, list) -> None
+        self.name: str = name
+        self.__cities: list = cities
+
+    def get_cities(self):
+        # type: () -> list
+        return self.__cities
+
+    def __str__(self):
+        # type: () -> str
+        res: str = str(type(self).__name__) + "("  # initial value
+        index: int = 0  # initial value
+        for item in vars(self).items():
+            res += str(item[0]) + "=" + str(item[1])
+
+            if index < len(vars(self).items()) - 1:
+                res += ", "
+
+            index += 1
+
+        return res + ")"
+
+    def clone(self):
+        # type: () -> Planet
+        return copy.deepcopy(self)
+
 
 class City:
     """
     This class contains attributes of a city in this game.
     """
+
+    def __init__(self, name, tiles):
+        # type: (str, list) -> None
+        self.name: str = name
+        self.__tiles: list = tiles
+
+    def get_tiles(self):
+        # type: () -> list
+        return self.__tiles
+
+    def __str__(self):
+        # type: () -> str
+        res: str = str(type(self).__name__) + "("  # initial value
+        index: int = 0  # initial value
+        for item in vars(self).items():
+            res += str(item[0]) + "=" + str(item[1])
+
+            if index < len(vars(self).items()) - 1:
+                res += ", "
+
+            index += 1
+
+        return res + ")"
+
+    def clone(self):
+        # type: () -> City
+        return copy.deepcopy(self)
 
 
 class CityTile:
@@ -1356,17 +763,50 @@ class GameCharacter:
     This class contains attributes of a game character in this game.
     """
 
+    def __init__(self, name, adventure_mode_location):
+        # type: (str, AdventureModeLocation or None) -> None
+        self.game_character_id: str = str(uuid.uuid1())  # generating random game character ID
+        self.name: str = name
+        self.adventure_mode_location: AdventureModeLocation or None = adventure_mode_location
+
+    def __str__(self):
+        # type: () -> str
+        res: str = str(type(self).__name__) + "("  # initial value
+        index: int = 0  # initial value
+        for item in vars(self).items():
+            res += str(item[0]) + "=" + str(item[1])
+
+            if index < len(vars(self).items()) - 1:
+                res += ", "
+
+            index += 1
+
+        return res + ")"
+
+    def clone(self):
+        # type: () -> GameCharacter
+        return copy.deepcopy(self)
+
 
 class NPC(GameCharacter):
     """
     This class contains attributes of a non-player character (NPC).
     """
 
+    def __init__(self, name, adventure_mode_location, message):
+        # type: (str, AdventureModeLocation, str) -> None
+        GameCharacter.__init__(self, name, adventure_mode_location)
+        self.message: str = message
+
 
 class Trainer(GameCharacter):
     """
     This class contains attributes of a trainer in this game.
     """
+
+    def __init__(self, name, adventure_mode_location):
+        # type: (str, AdventureModeLocation or None) -> None
+        GameCharacter.__init__(self, name, adventure_mode_location)
 
 
 class PlayerTrainer(Trainer):
@@ -1380,11 +820,41 @@ class CPUTrainer(Trainer):
     This class contains attributes of a CPU controlled trainer.
     """
 
+    POSSIBLE_TRAINER_TYPES: list = ["NORMAL", "GYM LEADER"]
+
 
 class AdventureModeLocation:
     """
     This class contains attributes of the location of a game character in adventure mode of this game.
     """
+
+    def __init__(self, planet, city_index, city_tile_x, city_tile_y, floor_index, floor_tile_x, floor_tile_y):
+        # type: (Planet, int, int, int, int, int, int) -> None
+        self.planet: Planet = planet
+        self.city_index: int = city_index
+        self.city_tile_x: int = city_tile_x
+        self.city_tile_y: int = city_tile_y
+        self.floor_index: int = floor_index
+        self.floor_tile_x: int = floor_tile_x
+        self.floor_tile_y: int = floor_tile_y
+
+    def __str__(self):
+        # type: () -> str
+        res: str = str(type(self).__name__) + "("  # initial value
+        index: int = 0  # initial value
+        for item in vars(self).items():
+            res += str(item[0]) + "=" + str(item[1])
+
+            if index < len(vars(self).items()) - 1:
+                res += ", "
+
+            index += 1
+
+        return res + ")"
+
+    def clone(self):
+        # type: () -> AdventureModeLocation
+        return copy.deepcopy(self)
 
 
 class Jail:
@@ -1404,11 +874,102 @@ class AwardCondition:
     This class contains attributes of a condition for an award to be achieved.
     """
 
+    POSSIBLE_OPERATORS: list = [">", ">=", "<", "<=", "==", "!=", "has"]
+
+    def __init__(self, checked_player_attribute, operator, benchmark_value):
+        # type: (str, str, mpf) -> None
+        self.checked_player_attribute: str = checked_player_attribute
+        self.operator: str = operator if operator in self.POSSIBLE_OPERATORS else self.POSSIBLE_OPERATORS[0]
+        self.benchmark_value: mpf = benchmark_value
+
+    def condition_met(self, trainer):
+        # type: (Trainer) -> bool
+        try:
+            if self.operator == ">":
+                return mpf(getattr(trainer, str(self.checked_player_attribute))) > self.benchmark_value
+            elif self.operator == ">=":
+                return mpf(getattr(trainer, str(self.checked_player_attribute))) >= self.benchmark_value
+            elif self.operator == "<":
+                return mpf(getattr(trainer, str(self.checked_player_attribute))) < self.benchmark_value
+            elif self.operator == "<=":
+                return mpf(getattr(trainer, str(self.checked_player_attribute))) <= self.benchmark_value
+            elif self.operator == "==":
+                return mpf(getattr(trainer, str(self.checked_player_attribute))) == self.benchmark_value
+            elif self.operator == "!=":
+                return mpf(getattr(trainer, str(self.checked_player_attribute))) != self.benchmark_value
+            elif self.operator == "has":
+                return self.benchmark_value in list(getattr(trainer, str(self.checked_player_attribute)))
+        except AttributeError:
+            return False
+
+    def __str__(self):
+        # type: () -> str
+        res: str = str(type(self).__name__) + "("  # initial value
+        index: int = 0  # initial value
+        for item in vars(self).items():
+            res += str(item[0]) + "=" + str(item[1])
+
+            if index < len(vars(self).items()) - 1:
+                res += ", "
+
+            index += 1
+
+        return res + ")"
+
+    def clone(self):
+        # type: () -> AwardCondition
+        return copy.deepcopy(self)
+
 
 class Award:
     """
     This class contains attributes of an award a player can get for achieving something.
     """
+
+    POSSIBLE_CONNECTING_WORDS: list = ["AND", "OR"]
+
+    def __init__(self, name, description, conditions, connecting_word):
+        # type: (str, str, list, str) -> None
+        self.name: str = name
+        self.description: str = description
+        self.__conditions: list = conditions
+        self.connecting_word: str = connecting_word if connecting_word in self.POSSIBLE_CONNECTING_WORDS \
+            else self.POSSIBLE_CONNECTING_WORDS[0]
+
+    def conditions_met(self, trainer):
+        # type: (Trainer) -> bool
+        if self.connecting_word == "AND":
+            for condition in self.__conditions:
+                if not condition.condition_met(trainer):
+                    return False
+            return True
+        else:
+            for condition in self.__conditions:
+                if condition.condition_met(trainer):
+                    return True
+            return False
+
+    def get_conditions(self):
+        # type: () -> list
+        return self.__conditions
+
+    def __str__(self):
+        # type: () -> str
+        res: str = str(type(self).__name__) + "("  # initial value
+        index: int = 0  # initial value
+        for item in vars(self).items():
+            res += str(item[0]) + "=" + str(item[1])
+
+            if index < len(vars(self).items()) - 1:
+                res += ", "
+
+            index += 1
+
+        return res + ")"
+
+    def clone(self):
+        # type: () -> Award
+        return copy.deepcopy(self)
 
 
 class ResourceReward:
@@ -1416,11 +977,62 @@ class ResourceReward:
     This class contains attributes of the resources gained for doing something.
     """
 
+    def __init__(self, player_reward_exp=mpf("0"), player_reward_dollars=mpf("0"),
+                 legendary_creature_reward_exp=mpf("0"), player_reward_items=None):
+        # type: (mpf, mpf, mpf, list) -> None
+        if player_reward_items is None:
+            player_reward_items = []
+
+        self.player_reward_exp: mpf = player_reward_exp
+        self.player_reward_dollars: mpf = player_reward_dollars
+        self.legendary_creature_reward_exp: mpf = legendary_creature_reward_exp
+        self.__player_reward_items: list = player_reward_items
+
+    def get_player_reward_items(self):
+        # type: () -> list
+        return self.__player_reward_items
+
+    def __str__(self):
+        # type: () -> str
+        res: str = str(type(self).__name__) + "("  # initial value
+        index: int = 0  # initial value
+        for item in vars(self).items():
+            res += str(item[0]) + "=" + str(item[1])
+
+            if index < len(vars(self).items()) - 1:
+                res += ", "
+
+            index += 1
+
+        return res + ")"
+
+    def clone(self):
+        # type: () -> ResourceReward
+        return copy.deepcopy(self)
+
 
 class Game:
     """
     This class contains attributes of saved game data.
     """
+
+    def __str__(self):
+        # type: () -> str
+        res: str = str(type(self).__name__) + "("  # initial value
+        index: int = 0  # initial value
+        for item in vars(self).items():
+            res += str(item[0]) + "=" + str(item[1])
+
+            if index < len(vars(self).items()) - 1:
+                res += ", "
+
+            index += 1
+
+        return res + ")"
+
+    def clone(self):
+        # type: () -> Game
+        return copy.deepcopy(self)
 
 
 ###########################################

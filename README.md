@@ -1,7 +1,7 @@
 # [SoftwareApkDev.github.io - homepage](https://SoftwareApkDev.github.io/)
 
 Welcome to my page! I am SoftwareApkDev, a software developer. I love to 
-develop games.
+develop applications.
 
 To see my web browser games, go to [Web Browser Games](https://softwareapkdev.github.io/web-browser-games/).
 
@@ -10,6 +10,8 @@ To see my command-line interface games, go to [CLI Games](https://softwareapkdev
 To see my graphical user interface games, go to [GUI Games](https://softwareapkdev.github.io/gui-games/).
 
 To see my Android games, go to [Android Games](https://softwareapkdev.github.io/android-games/).
+
+To see my programming libraries, go to [Programming Libraries](https://softwareapkdev.github.io/programming-libraries/)
 
 ## Table of Contents
 
@@ -29,9 +31,10 @@ To see my Android games, go to [Android Games](https://softwareapkdev.github.io/
 
 ### 2. Command Line Interface Games
 
-| Game                                                    | Progress           |
-|---------------------------------------------------------|--------------------|
-| [Life Simulation](cli-games/LIFE_SIMULATION/index.html) | Under construction |
+| Game                                                             | Progress           |
+|------------------------------------------------------------------|--------------------|
+| [Life Simulation](cli-games/LIFE_SIMULATION/index.html)          | Under construction |
+| [Infinite Team Battle RPG](cli-games/LIFE_SIMULATION/index.html) | Under construction | 
 
 ### 3. Graphical User Interface Games
 
@@ -40,6 +43,12 @@ To see my Android games, go to [Android Games](https://softwareapkdev.github.io/
 |      |          |
 
 ### 4. Android Games
+
+| Game | Progress |
+|------|----------|
+|      |          |
+
+### 5. Programming Libraries
 
 | Game | Progress |
 |------|----------|

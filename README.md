@@ -1,6 +1,6 @@
 # INDONESIAN PROGRAMMERS WhatsApp Group Website
 
-This is a simple static website for INDONESIAN PROGRAMMERS WhatsApp group dedicated to sharing and showcasing application projects created by its members.
+This is a website for INDONESIAN PROGRAMMERS WhatsApp group dedicated to sharing and showcasing application projects created by its members.
 
 ## Features
 

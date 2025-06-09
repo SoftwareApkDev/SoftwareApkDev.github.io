@@ -2,26 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Group Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Group Profile - INDONESIAN PROGRAMMERS</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+
   <header>
-    <h1>Group Profile</h1>
-    <nav>
+    <h1>INDONESIAN PROGRAMMERS</h1>
+
+    <button id="hamburger-btn">
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+    </button>
+
+    <nav id="main-nav">
       <a href="index.html">Home</a>
       <a href="group.html">Group Profile</a>
       <a href="articles.html">Articles</a>
     </nav>
   </header>
+
   <main>
-    <h2>Group Name: INDONESIAN PROGRAMMERS</h2>
-    <p>Description: A group of passionate programmers in Indonesia working on real-world app ideas together.</p>
-    <h3>Key Members:</h3>
-    <ul>
-      <li>SoftwareApkDev - Developer + Admin</li>
-    </ul>
-    <a href="https://chat.whatsapp.com/Iuzkb31hOB1LKZbM4gByIb">Invite Link</a>
+    <section class="card">
+        <h2>Group Profile</h2>
+        <p>A group passionate about working on real-world application ideas together, turning concepts into code.</p>
+        
+        <h3>Key Members:</h3>
+        <ul>
+          <li>SoftwareApkDev - Developer + Admin</li>
+          </ul>
+
+        <a href="https://chat.whatsapp.com/Iuzkb31hOB1LKZbM4gByIb" class="button-link">Join Group via WhatsApp</a>
+    </section>
   </main>
+
+  <script>
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const mainNav = document.getElementById('main-nav');
+
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('is-active');
+      mainNav.classList.toggle('is-open');
+    });
+  </script>
+
 </body>
 </html>

@@ -2,22 +2,58 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Project Articles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Articles - INDONESIAN PROGRAMMERS</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+
   <header>
-    <h1>Project Articles</h1>
-    <nav>
+    <h1>INDONESIAN PROGRAMMERS</h1>
+
+    <button id="hamburger-btn">
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+    </button>
+
+    <nav id="main-nav">
       <a href="index.html">Home</a>
       <a href="group.html">Group Profile</a>
       <a href="articles.html">Articles</a>
     </nav>
   </header>
+
   <main>
-    <ul>
-      <!--<li><a href="article1.html">Smart Expense Tracker App by Bob</a></li>-->
-    </ul>
+      <section class="card">
+        <h2>Articles & Projects Collection</h2>
+        <p>Here is a list of projects and articles created by our community members. Click to see more details.</p>
+      </section>
+
+      <section class="card">
+          <h3>Smart Expense Tracker App</h3>
+          <p>A mobile application for intelligently tracking daily expenses, equipped with analytics features. Built with Flutter technology.</p>
+          <p><strong>Contributor:</strong> Bob</p>
+          <a href="#" class="button-link">Read More</a>
+      </section>
+      
+      <section class="card">
+          <h3>Group Portfolio Website</h3>
+          <p>The website you are currently viewing! Built with modern HTML & CSS to showcase the group's works.</p>
+          <p><strong>Contributor:</strong> SoftwareApkDev</p>
+          <a href="#" class="button-link">View Code on GitHub</a>
+      </section>
   </main>
+
+  <script>
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const mainNav = document.getElementById('main-nav');
+
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('is-active');
+      mainNav.classList.toggle('is-open');
+    });
+  </script>
+
 </body>
 </html>
